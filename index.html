@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel Intermedio: De usuario común a usuario que destaca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — CSS CUSTOM PROPERTIES
+    ============================================================ */
+    :root {
+      --surface:                   #fcf9f8;
+      --surface-dim:               #dcd9d9;
+      --surface-container-lowest:  #ffffff;
+      --surface-container-low:     #f6f3f2;
+      --surface-container:         #f0eded;
+      --surface-container-high:    #eae7e7;
+      --surface-container-highest: #e4e2e1;
+      --surface-variant:           #e4e2e1;
+      --inverse-surface:           #303030;
+      --on-surface:                #1b1c1c;
+      --on-surface-variant:        #3f4941;
+      --on-background:             #1b1c1c;
+      --inverse-on-surface:        #f3f0f0;
+      --outline:                   #6f7a70;
+      --outline-variant:           #bfc9be;
+      --surface-tint:              #176c40;
+      --primary:                   #005931;
+      --on-primary:                #ffffff;
+      --primary-container:         #217346;
+      --on-primary-container:      #a4f5bd;
+      --inverse-primary:           #88d8a1;
+      --primary-fixed:             #a3f4bc;
+      --primary-fixed-dim:         #88d8a1;
+      --secondary:                 #556158;
+      --secondary-container:       #d9e6da;
+      --tertiary-fixed:            #e2e2e2;
+      --tertiary-fixed-dim:        #c6c6c7;
+      --error:                     #ba1a1a;
+      --background:                #fcf9f8;
+      --section-green:             #E8F5E9;
+      --section-border-green:      #D0E8D2;
+
+      --font:        'Inter', sans-serif;
+      --base:        8px;
+      --sp-desktop:  80px;
+      --sp-mobile:   48px;
+      --gutter:      24px;
+      --stack-sm:    12px;
+      --stack-md:    24px;
+      --container:   1140px;
+
+      --r-sm:   4px;
+      --r:      8px;
+      --r-md:   12px;
+      --r-lg:   16px;
+      --r-xl:   24px;
+      --r-full: 9999px;
+
+      --shadow:       0px 10px 30px rgba(0,0,0,.05);
+      --shadow-hover: 0px 15px 35px rgba(0,0,0,.08);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--background);
+      color: var(--on-background);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img  { display: block; max-width: 100%; height: auto; }
+    a    { text-decoration: none; color: inherit; }
+    ul   { list-style: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    ::selection { background: var(--primary-container); color: #fff; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;
+      vertical-align: middle;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* ============================================================
+       CUSTOM CURSOR
+    ============================================================ */
+    #cur  { width:10px;height:10px;background:var(--primary-container);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease,opacity .3s;mix-blend-mode:multiply; }
+    #curf { width:32px;height:32px;border:1.5px solid var(--primary-container);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.45;transition:transform .2s ease; }
+    @media (pointer:coarse){ #cur,#curf{display:none} }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .wrap     { max-width:var(--container);margin:0 auto;padding:0 var(--gutter); }
+    .wrap-md  { max-width:896px;margin:0 auto;padding:0 var(--gutter); }
+    .wrap-sm  { max-width:720px;margin:0 auto;padding:0 var(--gutter); }
+
+    section   { padding:var(--sp-mobile) 0; }
+    @media(min-width:768px){ section{padding:var(--sp-desktop) 0;} }
+
+    /* ============================================================
+       SCROLL ANIMATIONS
+    ============================================================ */
+    .fu {
+      opacity:0;
+      transform:translateY(28px);
+      transition:opacity .6s ease,transform .6s ease;
+    }
+    .fu.vis { opacity:1;transform:translateY(0); }
+
+    @media(prefers-reduced-motion:reduce){
+      .fu,.word,.hero-sub,.hero-trust,.hero-img-wrap
+      { opacity:1!important;transform:none!important;filter:none!important;transition:none!important; }
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    #nav {
+      position:fixed;top:0;left:0;right:0;z-index:1000;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px var(--gutter);
+      transition:background .3s,backdrop-filter .3s,box-shadow .3s;
+    }
+    #nav.scrolled {
+      background:rgba(252,249,248,.88);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      box-shadow:0 1px 0 var(--outline-variant);
+    }
+    .nav-logo { font-size:18px;font-weight:800;color:var(--primary);letter-spacing:-.01em; }
+    .nav-btn {
+      background:var(--primary-container);color:#fff;
+      font-size:13px;font-weight:700;
+      padding:10px 20px;border-radius:var(--r);
+      position:relative;overflow:hidden;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .nav-btn:hover { transform:translateY(-1px);box-shadow:var(--shadow-hover); }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      background:var(--primary-container);color:#fff;
+      font-family:var(--font);font-weight:700;font-size:18px;
+      padding:16px 32px;border-radius:var(--r);
+      min-height:56px;width:100%;
+      position:relative;overflow:hidden;
+      border:none;cursor:pointer;
+      transition:transform .2s,box-shadow .2s;
+      animation:pulse 3s ease-in-out infinite;
+    }
+    .btn:hover { transform:translateY(-2px) scale(1.02);box-shadow:var(--shadow-hover);animation:none; }
+    .btn-lg { font-size:20px;padding:18px 32px;min-height:64px;border-radius:var(--r-xl);flex-direction:column;gap:4px; }
+    .btn-lg small { font-size:13px;font-weight:400;opacity:.8; }
+
+    @keyframes pulse {
+      0%,100% { box-shadow:0 0 0 0 rgba(33,115,70,.3); }
+      50%      { box-shadow:0 0 0 10px rgba(33,115,70,0);transform:scale(1.005); }
+    }
+    .ripple {
+      position:absolute;border-radius:50%;
+      background:rgba(255,255,255,.35);
+      transform:scale(0);
+      animation:rpl .6s linear;
+      pointer-events:none;
+    }
+    @keyframes rpl { to{transform:scale(4);opacity:0;} }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #hero {
+      position:relative;background:#fff;
+      padding-top:calc(var(--sp-mobile) + 64px);
+      padding-bottom:var(--sp-mobile);
+      border-bottom:1px solid var(--surface-variant);
+      overflow:hidden;
+    }
+    @media(min-width:768px){
+      #hero{padding-top:calc(var(--sp-desktop)+72px);padding-bottom:var(--sp-desktop);}
+    }
+    #hero-canvas { position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.45; }
+
+    .hero-grid {
+      display:grid;grid-template-columns:1fr;gap:48px;align-items:center;
+      position:relative;z-index:1;
+    }
+    @media(min-width:1024px){ .hero-grid{grid-template-columns:1fr 1fr;} }
+
+    .hero-badge {
+      display:inline-flex;align-items:center;gap:8px;
+      background:var(--surface-container);padding:6px 12px;
+      border-radius:var(--r-full);border:1px solid var(--outline-variant);
+      width:max-content;
+      font-size:11px;font-weight:700;color:var(--on-surface-variant);
+      text-transform:uppercase;letter-spacing:.08em;
+    }
+    .hero-badge .material-symbols-outlined { font-size:14px;color:var(--primary-container); }
+
+    .hero-h1 {
+      font-size:32px;font-weight:800;line-height:1.2;
+      color:var(--on-background);margin-top:16px;
+    }
+    @media(min-width:768px){
+      .hero-h1{font-size:48px;line-height:1.1;letter-spacing:-.02em;}
+    }
+    .hero-h1 .hl {
+      color:var(--primary-container);position:relative;display:inline;
+    }
+    .hero-h1 .hl svg {
+      position:absolute;bottom:-4px;left:0;width:100%;height:10px;
+      color:var(--primary-container);opacity:.25;
+    }
+    .word {
+      display:inline-block;
+      opacity:0;transform:translateY(14px);filter:blur(3px);
+      transition:opacity .45s ease,transform .45s ease,filter .45s ease;
+    }
+    .word.vis { opacity:1;transform:translateY(0);filter:blur(0); }
+
+    .hero-sub {
+      font-size:18px;line-height:1.6;color:var(--on-surface-variant);max-width:540px;
+      margin-top:16px;
+      opacity:0;transform:translateY(10px);
+      transition:opacity .6s ease .1s,transform .6s ease .1s;
+    }
+    .hero-sub.vis { opacity:1;transform:translateY(0); }
+
+    .hero-trust {
+      display:flex;flex-wrap:wrap;gap:6px 14px;
+      font-size:14px;color:var(--secondary);font-weight:500;
+      opacity:0;transform:translateY(10px);
+      transition:opacity .6s ease .2s,transform .6s ease .2s;
+    }
+    .hero-trust.vis { opacity:1;transform:translateY(0); }
+    .hero-trust span { display:flex;align-items:center;gap:4px; }
+    .hero-trust .ck { color:var(--primary-container); }
+
+    .hero-img-wrap {
+      position:relative;display:flex;justify-content:center;
+      perspective:1000px;
+      opacity:0;transform:translateX(20px);
+      transition:opacity .8s ease .15s,transform .8s ease .15s;
+    }
+    .hero-img-wrap.vis { opacity:1;transform:translateX(0); }
+    .hero-glow {
+      position:absolute;inset:-20%;
+      background:radial-gradient(circle,rgba(33,115,70,.1) 0%,transparent 68%);
+      border-radius:50%;pointer-events:none;
+    }
+    .tilt {
+      position:relative;z-index:1;
+      transform-style:preserve-3d;
+      transition:transform .12s ease;
+      border-radius:var(--r-lg);
+      max-width:460px;width:100%;
+    }
+    .tilt img { border-radius:var(--r-lg);filter:drop-shadow(0 20px 40px rgba(0,0,0,.16)); }
+
+    /* ============================================================
+       TENSIÓN
+    ============================================================ */
+    #tension { background:var(--surface-container); }
+
+    .sec-head { text-align:center; }
+    .sec-head h2 { font-size:32px;font-weight:700;line-height:1.3;color:var(--on-background); }
+    .sec-divider { width:48px;height:4px;background:var(--primary-container);border-radius:var(--r-full);margin:12px auto 0; }
+
+    .tension-card {
+      background:#fff;border-radius:var(--r-xl);padding:32px;
+      border:1px solid var(--outline-variant);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;gap:24px;margin-top:32px;
+    }
+    .t-item { display:flex;align-items:flex-start;gap:16px; }
+    .t-item .em { font-size:24px;flex-shrink:0;margin-top:2px; }
+    .t-item p  { font-size:16px;line-height:1.5;color:var(--on-surface); }
+    .t-quote {
+      margin-top:8px;padding-top:20px;border-top:1px solid var(--surface-variant);
+      text-align:center;
+    }
+    .t-quote p { font-size:18px;line-height:1.6;font-style:italic;color:var(--secondary); }
+
+    /* ============================================================
+       PRESENTACIÓN
+    ============================================================ */
+    #presentacion { background:#fff;border-bottom:1px solid var(--surface-variant); }
+    .pres-grid {
+      display:grid;grid-template-columns:1fr;gap:48px;align-items:center;
+    }
+    @media(min-width:1024px){ .pres-grid{grid-template-columns:1fr 1fr;} }
+    .pres-img {
+      border-radius:var(--r-lg);box-shadow:0 16px 40px rgba(0,0,0,.1);
+      max-width:420px;width:100%;margin:0 auto;
+      transform-style:preserve-3d;transition:transform .12s ease;
+    }
+    .pres-label {
+      display:flex;align-items:center;gap:8px;
+      color:var(--primary-container);font-size:14px;font-weight:700;margin-top:16px;
+    }
+    .pres-h2 { font-size:32px;font-weight:700;line-height:1.3;color:var(--on-background); }
+    .pres-p  { font-size:18px;line-height:1.6;color:var(--on-surface-variant);margin-top:12px; }
+
+    /* ============================================================
+       QUÉ INCLUYE
+    ============================================================ */
+    #que-incluye { background:var(--surface); }
+    .inc-grid {
+      display:grid;grid-template-columns:1fr;gap:24px;margin-top:48px;
+    }
+    @media(min-width:768px){ .inc-grid{grid-template-columns:1fr 1fr;} }
+    .inc-card {
+      background:#fff;padding:24px;border-radius:var(--r-xl);
+      border:1px solid var(--outline-variant);
+      display:flex;align-items:flex-start;gap:16px;
+      transform-style:preserve-3d;
+      transition:transform .12s ease,box-shadow .2s,border-color .2s;
+    }
+    .inc-card:hover { box-shadow:var(--shadow-hover);border-color:var(--primary-container); }
+    .inc-icon {
+      background:var(--secondary-container);padding:12px;border-radius:var(--r);
+      color:var(--primary-container);flex-shrink:0;
+    }
+    .inc-icon .material-symbols-outlined { font-size:22px; }
+    .inc-card h3 { font-size:18px;font-weight:700;color:var(--on-background);margin-bottom:6px; }
+    .inc-card p  { font-size:16px;line-height:1.5;color:var(--on-surface-variant); }
+
+    /* ============================================================
+       PARA QUIÉN
+    ============================================================ */
+    #para-quien { background:var(--section-green); }
+    .pq-card {
+      background:#fff;border-radius:var(--r-xl);padding:32px;
+      border:1px solid var(--section-border-green);box-shadow:var(--shadow);
+      margin-top:40px;
+    }
+    .pq-list { display:flex;flex-direction:column;gap:16px; }
+    .pq-item {
+      display:flex;align-items:flex-start;gap:12px;
+      font-size:18px;line-height:1.6;color:var(--on-surface);
+    }
+    .pq-item .material-symbols-outlined { color:var(--primary-container);font-size:22px;flex-shrink:0;margin-top:2px; }
+
+    /* ============================================================
+       MÓDULOS
+    ============================================================ */
+    #modulos { background:#fff;border-bottom:1px solid var(--surface-variant); }
+    .mod-sub { font-size:18px;line-height:1.6;color:var(--secondary);text-align:center;margin-top:8px; }
+    .mod-grid {
+      display:grid;grid-template-columns:1fr;gap:24px;margin-top:48px;
+    }
+    @media(min-width:768px){ .mod-grid{grid-template-columns:1fr 1fr;} }
+    @media(min-width:1024px){ .mod-grid{grid-template-columns:repeat(3,1fr);} }
+    .mod-card {
+      background:#fff;border-radius:var(--r-xl);padding:24px;
+      border:1px solid var(--outline-variant);box-shadow:var(--shadow);
+      position:relative;overflow:hidden;
+      transform-style:preserve-3d;
+      transition:border-color .2s,box-shadow .2s,transform .12s ease;
+    }
+    .mod-card::before {
+      content:'';position:absolute;top:0;left:0;
+      width:3px;height:100%;background:var(--surface-variant);
+      transition:background .2s;
+    }
+    .mod-card:hover { border-color:var(--primary-container);box-shadow:var(--shadow-hover); }
+    .mod-card:hover::before { background:var(--primary-container); }
+    .mod-em { font-size:28px;margin-bottom:14px; }
+    .mod-card h3 { font-size:18px;font-weight:700;color:var(--on-background);margin-bottom:8px; }
+    .mod-card p  { font-size:14px;line-height:1.5;color:var(--on-surface-variant); }
+
+    /* ============================================================
+       TRANSFORMACIÓN
+    ============================================================ */
+    #transformacion { background:var(--surface); }
+    .tf-grid {
+      display:grid;grid-template-columns:1fr;
+      border-radius:var(--r-xl);overflow:hidden;
+      border:1px solid var(--outline-variant);background:#fff;
+      margin-top:40px;
+    }
+    @media(min-width:768px){ .tf-grid{grid-template-columns:1fr 1fr;} }
+    .col-antes  { background:rgba(228,226,225,.3);padding:32px; }
+    .col-des    {
+      background:var(--section-green);padding:32px;
+      border-top:1px solid var(--outline-variant);
+    }
+    @media(min-width:768px){ .col-des{border-top:0;border-left:1px solid var(--outline-variant);} }
+    .col-hd {
+      font-size:20px;font-weight:700;
+      margin-bottom:24px;display:flex;align-items:center;gap:8px;
+    }
+    .col-antes .col-hd { color:var(--secondary); }
+    .col-des   .col-hd { color:var(--primary-container); }
+    .tf-list { display:flex;flex-direction:column;gap:14px; }
+    .tf-item { display:flex;align-items:flex-start;gap:10px;font-size:16px;line-height:1.5; }
+    .col-antes .tf-item { color:var(--on-surface-variant); }
+    .col-des   .tf-item { color:var(--on-surface); }
+    .x { color:var(--tertiary-fixed-dim);font-size:14px;margin-top:3px;flex-shrink:0; }
+    .tf-item .material-symbols-outlined { color:var(--primary-container);font-size:18px;flex-shrink:0;margin-top:2px; }
+
+    /* ============================================================
+       BONOS
+    ============================================================ */
+    #bonos { background:var(--section-green); }
+    .bonos-tag {
+      display:inline-block;
+      background:rgba(33,115,70,.1);color:var(--primary-container);
+      font-size:13px;font-weight:700;padding:4px 12px;
+      border-radius:var(--r-full);margin-bottom:10px;
+    }
+    .bonos-grid {
+      display:grid;grid-template-columns:1fr;gap:24px;margin-top:48px;
+    }
+    @media(min-width:768px){ .bonos-grid{grid-template-columns:repeat(3,1fr);} }
+    .bono-card {
+      background:#fff;border-radius:var(--r-xl);
+      padding:24px;padding-top:36px;
+      border:1px solid var(--section-border-green);
+      position:relative;
+      transform-style:preserve-3d;
+      transition:box-shadow .2s,transform .12s ease;
+    }
+    .bono-card:hover { box-shadow:var(--shadow-hover); }
+    .bono-badge {
+      position:absolute;top:-14px;right:16px;
+      background:#FFC107;color:#000;
+      font-size:11px;font-weight:700;
+      padding:4px 12px;border-radius:var(--r-full);
+      box-shadow:0 2px 8px rgba(0,0,0,.1);
+    }
+    .bono-em  { font-size:28px;margin-bottom:12px; }
+    .bono-card h3 { font-size:18px;font-weight:700;color:var(--on-background);margin-bottom:8px; }
+    .bono-card p  { font-size:14px;line-height:1.5;color:var(--on-surface-variant); }
+
+    /* ============================================================
+       PRECIO
+    ============================================================ */
+    #precio { background:#fff; }
+    .precio-card {
+      background:var(--surface-container);border-radius:var(--r-xl);
+      padding:32px;border:1px solid var(--outline-variant);
+      box-shadow:var(--shadow);max-width:480px;margin:32px auto;
+    }
+    .precio-rows { display:flex;flex-direction:column;gap:12px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--surface-variant); }
+    .precio-row { display:flex;justify-content:space-between;font-size:16px;color:var(--on-surface-variant); }
+    .precio-row.total { font-weight:700;color:var(--on-surface);margin-top:8px;padding-top:8px; }
+    .strike { text-decoration:line-through;color:var(--error); }
+    .precio-lbl { font-size:13px;font-weight:700;color:var(--secondary);text-transform:uppercase;letter-spacing:.08em;text-align:center;margin-bottom:8px; }
+    .precio-amt { font-size:56px;font-weight:900;color:var(--primary-container);line-height:1;text-align:center;margin-bottom:24px; }
+    .precio-icons { display:flex;justify-content:center;gap:14px;color:var(--secondary);margin-top:16px; }
+    .precio-icons .material-symbols-outlined { font-size:28px; }
+    .precio-note { font-size:16px;color:var(--secondary);text-align:center;line-height:1.5;max-width:480px;margin:0 auto; }
+
+    /* ============================================================
+       GARANTÍA
+    ============================================================ */
+    #garantia { background:var(--primary);padding:48px 0; }
+    .garantia-inner {
+      display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;
+    }
+    @media(min-width:768px){ .garantia-inner{flex-direction:row;text-align:left;gap:32px;} }
+    .garantia-inner .material-symbols-outlined { font-size:64px;color:var(--primary-fixed);flex-shrink:0; }
+    .garantia-inner h2 { font-size:22px;font-weight:700;color:#fff;margin-bottom:8px; }
+    .garantia-inner p  { font-size:16px;line-height:1.5;color:var(--primary-fixed-dim); }
+
+    /* ============================================================
+       FAQ
+    ============================================================ */
+    #faq { background:var(--surface); }
+    .faq-list { display:flex;flex-direction:column;gap:14px;margin-top:40px; }
+    .faq-item {
+      background:#fff;border-radius:var(--r);
+      border:1px solid var(--outline-variant);overflow:hidden;
+      transition:border-color .2s;
+    }
+    .faq-item.open { border-color:var(--primary-container); }
+    .faq-q {
+      display:flex;justify-content:space-between;align-items:center;
+      padding:20px 24px;font-size:18px;font-weight:700;
+      color:var(--on-background);cursor:pointer;
+      text-align:left;width:100%;
+      transition:background .2s;
+    }
+    .faq-q:hover { background:var(--surface-container-low); }
+    .faq-chev { flex-shrink:0;transition:transform .3s ease;color:var(--on-surface-variant); }
+    .faq-item.open .faq-chev { transform:rotate(180deg); }
+    .faq-ans { height:0;overflow:hidden;transition:height .3s ease; }
+    .faq-ans-inner { padding:0 24px 20px;font-size:16px;line-height:1.5;color:var(--on-surface-variant); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer { background:var(--surface-container-highest);padding:48px 0;border-top:1px solid var(--outline-variant); }
+    .foot-inner {
+      display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+    }
+    @media(min-width:768px){ .foot-inner{flex-direction:row;justify-content:space-between;text-align:left;} }
+    .foot-logo { font-size:20px;font-weight:800;color:var(--primary); }
+    .foot-links { display:flex;flex-wrap:wrap;justify-content:center;gap:6px 20px;font-size:16px;color:var(--on-surface-variant); }
+    .foot-links a:hover { color:var(--primary);text-decoration:underline;text-underline-offset:4px; }
+    .foot-copy { font-size:14px;color:var(--on-surface-variant); }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curf"></div>
+
+<!-- ── NAVBAR ─────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-logo">Locos por las Celdas</div>
+  <a href="#precio" class="nav-btn rpl-btn">Acceder por $11 USD</a>
+</nav>
+
+<!-- ── HERO ──────────────────────────────── -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <!-- Copy -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="hero-badge fu">
+          <span class="material-symbols-outlined">trending_up</span>
+          <span>Por Locos por las Celdas</span>
+        </div>
+        <h1 class="hero-h1" id="hero-h1">
+          Dejá de usar Excel a medias y convertite en la persona a la que
+          <span class="hl">todos le preguntan<svg preserveAspectRatio="none" viewBox="0 0 100 10"><path d="M0 5 Q50 10 100 5" fill="transparent" stroke="currentColor" stroke-width="4"/></svg></span>
+        </h1>
+        <p class="hero-sub" id="hero-sub">
+          Domina Excel nivel intermedio con una guía práctica, sin perder tiempo en cientos de videos ni pagar cursos de más de $100 USD. Empezá a entender los datos hoy mismo.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+          <a href="#precio" class="btn rpl-btn" id="hero-cta" style="max-width:440px;">
+            Acceder ahora por $11 USD
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+          <div class="hero-trust" id="hero-trust">
+            <span><span class="ck">✔</span> Pago único</span>
+            <span><span class="ck">✔</span> Acceso inmediato</span>
+            <span><span class="ck">✔</span> Garantía 7 días</span>
+            <span><span class="ck">✔</span> PC, celular o tablet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="hero-img-wrap" id="hero-img-wrap">
+        <div class="hero-glow"></div>
+        <div class="tilt" id="hero-tilt">
+          <img
+            src="imagenes/Excel Intermedio (7).png"
+            alt="Ebook Excel Intermedio"
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── TENSIÓN ────────────────────────────── -->
+<section id="tension">
+  <div class="wrap-sm">
+    <div class="sec-head fu">
+      <h2>¿Te suena familiar?</h2>
+      <div class="sec-divider"></div>
+    </div>
+    <div class="tension-card">
+      <div class="t-item fu"><span class="em">😩</span><p>Perdés horas tratando de cruzar datos de dos planillas distintas porque no sabés usar bien BUSCARV o XLOOKUP.</p></div>
+      <div class="t-item fu"><span class="em">🤯</span><p>Tu jefe te pide un "resumen rápido" y entrás en pánico porque no dominás las tablas dinámicas.</p></div>
+      <div class="t-item fu"><span class="em">🐢</span><p>Repetís tareas manuales todos los días copiando y pegando celdas sin saber que podrías automatizarlo.</p></div>
+      <div class="t-item fu"><span class="em">👀</span><p>Sentís que tus compañeros resuelven en 5 minutos lo que a vos te toma 2 horas.</p></div>
+      <div class="t-quote">
+        <p>"No es tu culpa… simplemente nadie te enseñó la ruta directa y sin relleno."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRESENTACIÓN ───────────────────────── -->
+<section id="presentacion">
+  <div class="wrap">
+    <div class="pres-grid">
+      <div class="fu" style="display:flex;justify-content:center;">
+        <img
+          src="imagenes/Excel Intermedio (5).png"
+          alt="Excel Intermedio Preview"
+          class="pres-img tilt"
+          id="pres-img"
+        />
+      </div>
+      <div class="fu" style="display:flex;flex-direction:column;gap:16px;">
+        <h2 class="pres-h2">Te presento: Excel Intermedio de usuario común a usuario que destaca</h2>
+        <p class="pres-p">Un ebook directo al grano, diseñado para que dejes de "armar planillas" y empieces a <strong>entender y dominar los datos</strong>. Olvidate de la teoría aburrida; acá vas a encontrar casos reales, atajos prácticos y las fórmulas que realmente se usan en el día a día laboral.</p>
+        <div class="pres-label">
+          <span class="material-symbols-outlined">menu_book</span>
+          <span>Lectura rápida + Práctica inmediata</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUÉ INCLUYE ────────────────────────── -->
+<section id="que-incluye">
+  <div class="wrap">
+    <div class="sec-head fu"><h2>¿Qué recibís al comprar?</h2></div>
+    <div class="inc-grid">
+      <div class="inc-card fu">
+        <div class="inc-icon"><span class="material-symbols-outlined">book</span></div>
+        <div><h3>Ebook Guía Paso a Paso</h3><p>100+ páginas de contenido destilado. Explicaciones claras, sin jerga innecesaria.</p></div>
+      </div>
+      <div class="inc-card fu">
+        <div class="inc-icon"><span class="material-symbols-outlined">file_copy</span></div>
+        <div><h3>Archivos de Práctica</h3><p>Planillas de Excel listas para que apliques lo que leés mientras avanzás.</p></div>
+      </div>
+      <div class="inc-card fu">
+        <div class="inc-icon"><span class="material-symbols-outlined">redeem</span></div>
+        <div><h3>3 Bonos Exclusivos</h3><p>Material complementario para potenciar tus reportes y tu perfil profesional.</p></div>
+      </div>
+      <div class="inc-card fu">
+        <div class="inc-icon"><span class="material-symbols-outlined">all_inclusive</span></div>
+        <div><h3>Acceso de por vida</h3><p>Descargás el material y te lo quedás para siempre. Sin suscripciones mensuales.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARA QUIÉN ─────────────────────────── -->
+<section id="para-quien">
+  <div class="wrap-md">
+    <div class="sec-head fu"><h2>Este ebook es para vos si...</h2></div>
+    <div class="pq-card fu">
+      <ul class="pq-list">
+        <li class="pq-item fu"><span class="material-symbols-outlined">check_circle</span><span>Usás Excel básico (sabés sumar, restar, dar formato) pero <strong>sentís que te falta un salto de nivel</strong>.</span></li>
+        <li class="pq-item fu"><span class="material-symbols-outlined">check_circle</span><span>Estás buscando <strong>cambiar de trabajo o ascender</strong> y piden "Excel Intermedio/Avanzado" en los requisitos.</span></li>
+        <li class="pq-item fu"><span class="material-symbols-outlined">check_circle</span><span>Sos emprendedor o trabajás con datos y necesitás <strong>tomar decisiones más rápido</strong> sin depender de otros.</span></li>
+        <li class="pq-item fu"><span class="material-symbols-outlined">check_circle</span><span>Preferís <strong>leer e ir directo al punto</strong> antes que mirar horas de video donde hablan lento.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── MÓDULOS ────────────────────────────── -->
+<section id="modulos">
+  <div class="wrap">
+    <div class="sec-head fu">
+      <h2>Un camino claro, paso a paso</h2>
+      <p class="mod-sub">No es teoría suelta. Es un sistema ordenado para dominar la herramienta.</p>
+    </div>
+    <div class="mod-grid">
+      <div class="mod-card fu"><div class="mod-em">🧠</div><h3>1. Mentalidad de Datos</h3><p>Cómo estructurar la información antes de tocar una fórmula para evitar errores futuros.</p></div>
+      <div class="mod-card fu"><div class="mod-em">🧮</div><h3>2. Fórmulas Esenciales</h3><p>Dominio total de BUSCARV, XLOOKUP, SI, Y, O, CONTAR.SI, SUMAR.SI. El corazón del análisis.</p></div>
+      <div class="mod-card fu"><div class="mod-em">📊</div><h3>3. Tablas Dinámicas</h3><p>Resumir miles de filas de datos en 3 clics. El "secreto" de los reportes gerenciales rápidos.</p></div>
+      <div class="mod-card fu"><div class="mod-em">📈</div><h3>4. Visualización</h3><p>Gráficos que realmente comunican y formatos condicionales para detectar anomalías al instante.</p></div>
+      <div class="mod-card fu"><div class="mod-em">✅</div><h3>5. Validación y Limpieza</h3><p>Crear listas desplegables y limpiar datos "sucios" usando Texto en Columnas y atajos clave.</p></div>
+      <div class="mod-card fu"><div class="mod-em">⚡</div><h3>6. Intro a Power Query</h3><p>El primer paso a la automatización. Cómo conectar datos sin copiar y pegar nunca más.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TRANSFORMACIÓN ─────────────────────── -->
+<section id="transformacion">
+  <div class="wrap-md">
+    <div class="sec-head fu"><h2>¿Qué cambia cuando dominás Excel intermedio?</h2></div>
+    <div class="tf-grid fu">
+      <div class="col-antes">
+        <div class="col-hd"><span>❌</span> ANTES</div>
+        <ul class="tf-list">
+          <li class="tf-item fu"><span class="x">✖</span><span>2 horas copiando y pegando datos.</span></li>
+          <li class="tf-item fu"><span class="x">✖</span><span>Miedo de "romper" la planilla si tocás algo.</span></li>
+          <li class="tf-item fu"><span class="x">✖</span><span>Calculadora en mano para revisar subtotales.</span></li>
+          <li class="tf-item fu"><span class="x">✖</span><span>Inseguridad al postularte a nuevos puestos.</span></li>
+        </ul>
+      </div>
+      <div class="col-des">
+        <div class="col-hd"><span>✅</span> DESPUÉS</div>
+        <ul class="tf-list">
+          <li class="tf-item fu"><span class="material-symbols-outlined">check</span><span>10 minutos actualizando un reporte automático.</span></li>
+          <li class="tf-item fu"><span class="material-symbols-outlined">check</span><span>Seguridad total al manipular y cruzar datos.</span></li>
+          <li class="tf-item fu"><span class="material-symbols-outlined">check</span><span>Tablas dinámicas que hacen el trabajo sucio.</span></li>
+          <li class="tf-item fu"><span class="material-symbols-outlined">check</span><span>Perfil destacado en entrevistas laborales.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BONOS ──────────────────────────────── -->
+<section id="bonos">
+  <div class="wrap">
+    <div class="sec-head fu">
+      <span class="bonos-tag">OFERTA LIMITADA</span>
+      <h2 style="max-width:580px;margin:0 auto;">Y eso no es todo — también recibís estos bonos sin costo extra</h2>
+    </div>
+    <div class="bonos-grid">
+      <div class="bono-card fu">
+        <div class="bono-badge">Incluido gratis</div>
+        <div class="bono-em">🎯</div>
+        <h3>Plantilla Dashboard de Ventas</h3>
+        <p>Un tablero de control profesional listo para usar y adaptar a tus propios datos. Solo cambiás la base y se actualiza solo.</p>
+      </div>
+      <div class="bono-card fu">
+        <div class="bono-badge">Incluido gratis</div>
+        <div class="bono-em">📖</div>
+        <h3>Glosario de Fórmulas Inglés/Español</h3>
+        <p>La hoja de ruta para cuando te toque usar un Excel en otro idioma. Nunca más te vas a trabar buscando la traducción de una función.</p>
+      </div>
+      <div class="bono-card fu">
+        <div class="bono-badge">Incluido gratis</div>
+        <div class="bono-em">📄</div>
+        <h3>Guía: Cómo poner Excel en tu CV</h3>
+        <p>Las palabras exactas que buscan los reclutadores para que tu perfil resalte. Dejá de poner solo "Excel Avanzado".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRECIO ─────────────────────────────── -->
+<section id="precio">
+  <div class="wrap">
+    <div class="sec-head fu"><h2>Todo esto por mucho menos de lo que pensás</h2></div>
+    <div class="precio-card fu">
+      <div class="precio-rows">
+        <div class="precio-row"><span>Ebook Excel Intermedio + Archivos</span><span>Valor: $47</span></div>
+        <div class="precio-row"><span>Bono: Plantilla Dashboard</span><span>Valor: $15</span></div>
+        <div class="precio-row"><span>Bono: Glosario Inglés/Español</span><span>Valor: $9</span></div>
+        <div class="precio-row"><span>Bono: Guía CV</span><span>Valor: $9</span></div>
+        <div class="precio-row total"><span>Valor Total:</span><span class="strike">$80 USD</span></div>
+      </div>
+      <div class="precio-lbl">PRECIO DE LANZAMIENTO</div>
+      <div class="precio-amt">$<span class="counter" data-target="11">0</span> USD</div>
+      <button class="btn btn-lg rpl-btn" id="cta-main">
+        <span>QUIERO ACCEDER AHORA</span>
+        <small>Pago seguro y cifrado</small>
+      </button>
+      <div class="precio-icons">
+        <span class="material-symbols-outlined">lock</span>
+        <span class="material-symbols-outlined">credit_card</span>
+      </div>
+    </div>
+    <p class="precio-note fu">Una vez realizado el pago, recibirás un correo electrónico con acceso inmediato a todo el material.</p>
+  </div>
+</section>
+
+<!-- ── GARANTÍA ───────────────────────────── -->
+<section id="garantia">
+  <div class="wrap-md">
+    <div class="garantia-inner fu">
+      <span class="material-symbols-outlined">security</span>
+      <div>
+        <h2>Garantía total de 7 días</h2>
+        <p>Si leés el ebook, aplicás los ejercicios y sentís que no aprendiste nada nuevo o que no vale la inversión, te devuelvo el 100% de tu dinero. Sin preguntas, sin vueltas. El riesgo lo asumo yo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ────────────────────────────────── -->
+<section id="faq">
+  <div class="wrap-sm">
+    <div class="sec-head fu"><h2>Preguntas Frecuentes</h2></div>
+    <div class="faq-list">
+      <div class="faq-item fu">
+        <button class="faq-q" aria-expanded="false">
+          ¿Es un curso en video?
+          <span class="material-symbols-outlined faq-chev" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;">expand_more</span>
+        </button>
+        <div class="faq-ans"><div class="faq-ans-inner">No. Es un ebook estructurado y directo al grano, acompañado de archivos de práctica en Excel. Está diseñado para quienes prefieren leer, buscar información rápida y practicar a su propio ritmo sin mirar horas de videos.</div></div>
+      </div>
+      <div class="faq-item fu">
+        <button class="faq-q" aria-expanded="false">
+          ¿Desde qué versión de Excel sirve?
+          <span class="material-symbols-outlined faq-chev" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;">expand_more</span>
+        </button>
+        <div class="faq-ans"><div class="faq-ans-inner">La mayoría de las funciones y conceptos aplican desde Excel 2013 en adelante. Sin embargo, para sacar el máximo provecho (especialmente con funciones nuevas como XLOOKUP), recomendamos Excel 365 o 2021.</div></div>
+      </div>
+      <div class="faq-item fu">
+        <button class="faq-q" aria-expanded="false">
+          ¿Tengo acceso de por vida?
+          <span class="material-symbols-outlined faq-chev" style="font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;">expand_more</span>
+        </button>
+        <div class="faq-ans"><div class="faq-ans-inner">Sí. Una vez que comprás, descargás el PDF y los archivos y son tuyos para siempre. No hay suscripciones ni pagos ocultos.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────── -->
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-logo">Locos por las Celdas</div>
+      <div class="foot-links">
+        <a href="#">Términos y Condiciones</a>
+        <a href="#">Política de Privacidad</a>
+        <a href="#">Soporte</a>
+      </div>
+      <div class="foot-copy">© 2026 Locos por las Celdas. Todos los derechos reservados.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+(function(){
+  'use strict';
+
+  const reduced = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* ── Custom cursor ──────────────────────── */
+  const cur  = document.getElementById('cur');
+  const curf = document.getElementById('curf');
+  if (!reduced && window.matchMedia('(pointer:fine)').matches) {
+    let fx=0,fy=0,dx=0,dy=0;
+    document.addEventListener('mousemove', e => {
+      fx=e.clientX; fy=e.clientY;
+      cur.style.left=fx+'px'; cur.style.top=fy+'px';
+    });
+    (function loop(){ dx+=(fx-dx)*.1; dy+=(fy-dy)*.1;
+      curf.style.left=dx+'px'; curf.style.top=dy+'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{ cur.style.transform='translate(-50%,-50%) scale(2.5)'; curf.style.transform='translate(-50%,-50%) scale(1.5)'; });
+      el.addEventListener('mouseleave',()=>{ cur.style.transform='translate(-50%,-50%) scale(1)';   curf.style.transform='translate(-50%,-50%) scale(1)';   });
+    });
+  } else { cur.style.display='none'; curf.style.display='none'; }
+
+  /* ── Navbar scroll ──────────────────────── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', ()=>{ nav.classList.toggle('scrolled', window.scrollY>60); }, {passive:true});
+
+  /* ── Hero canvas — Excel grid dots ─────── */
+  const canvas = document.getElementById('hero-canvas');
+  const ctx    = canvas.getContext('2d');
+  let W,H,pts=[];
+  let mx=-9999,my=-9999;
+
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=canvas.offsetHeight;
+    pts=[];
+    const sp=80;
+    const cols=Math.ceil(W/sp)+1, rows=Math.ceil(H/sp)+1;
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+      pts.push({ ox:c*sp, oy:r*sp, x:c*sp, y:r*sp,
+        sz:Math.random()*1.4+.4, a:Math.random()*.35+.08 });
+    }
+  }
+  resize();
+  window.addEventListener('resize', resize, {passive:true});
+
+  const hero = document.getElementById('hero');
+  hero.addEventListener('mousemove', e=>{
+    const r=canvas.getBoundingClientRect();
+    mx=e.clientX-r.left; my=e.clientY-r.top;
+  },{passive:true});
+  hero.addEventListener('mouseleave', ()=>{ mx=-9999; my=-9999; });
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const col='33,115,70';
+    pts.forEach(p=>{
+      const dx=mx-p.ox, dy=my-p.oy;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<90 && !reduced){
+        const f=(90-d)/90;
+        p.x+=(p.ox-dx*f*.25-p.x)*.14;
+        p.y+=(p.oy-dy*f*.25-p.y)*.14;
+      } else {
+        p.x+=(p.ox-p.x)*.07;
+        p.y+=(p.oy-p.y)*.07;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${col},${p.a})`;
+      ctx.fill();
+    });
+    // Connect grid neighbours only (no O(n²))
+    const sp=80;
+    pts.forEach(p=>{
+      [p.x+sp,p.y].forEach((_,i)=>{
+        const nx=i===0?p.x+sp:p.x, ny=i===0?p.y:p.y+sp;
+        const nb=pts.find(q=>Math.abs(q.ox-p.ox-sp*(1-i))<4&&Math.abs(q.oy-p.oy-sp*i)<4);
+        if(!nb) return;
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y); ctx.lineTo(nb.x,nb.y);
+        ctx.strokeStyle=`rgba(${col},.05)`;
+        ctx.lineWidth=.6;
+        ctx.stroke();
+      });
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  /* ── Hero headline word reveal ──────────── */
+  function revealHero(){
+    const h1=document.getElementById('hero-h1');
+    function wrapWords(el){
+      el.childNodes.forEach(n=>{
+        if(n.nodeType===3){
+          const f=document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(w=>{
+            if(/^\s+$/.test(w)){ f.appendChild(document.createTextNode(w)); }
+            else if(w){ const s=document.createElement('span'); s.className='word'; s.textContent=w; f.appendChild(s); }
+          });
+          n.parentNode.replaceChild(f,n);
+        } else if(n.nodeType===1&&!n.classList.contains('word')){ wrapWords(n); }
+      });
+    }
+    if(!reduced) wrapWords(h1);
+    const words=h1.querySelectorAll('.word');
+    words.forEach((w,i)=>setTimeout(()=>w.classList.add('vis'), 80+i*55));
+    const delay=80+words.length*55;
+    setTimeout(()=>document.getElementById('hero-sub').classList.add('vis'),   delay+80);
+    setTimeout(()=>document.getElementById('hero-trust').classList.add('vis'), delay+200);
+    setTimeout(()=>document.getElementById('hero-img-wrap').classList.add('vis'), 150);
+  }
+  window.addEventListener('load', revealHero);
+
+  /* ── 3D Tilt ────────────────────────────── */
+  function tilt(el, intensity){
+    if(reduced) return;
+    el.addEventListener('mousemove', e=>{
+      const r=el.getBoundingClientRect();
+      const rx=((e.clientY-r.top-r.height/2)/(r.height/2))*-intensity;
+      const ry=((e.clientX-r.left-r.width/2)/(r.width/2))*intensity;
+      el.style.transform=`perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.025)`;
+    });
+    el.addEventListener('mouseleave', ()=>{ el.style.transform='perspective(800px) rotateX(0) rotateY(0) scale(1)'; });
+  }
+  tilt(document.getElementById('hero-tilt'), 10);
+  tilt(document.getElementById('pres-img'),  6);
+  document.querySelectorAll('.inc-card,.mod-card,.bono-card').forEach(el=>tilt(el,5));
+
+  /* ── IntersectionObserver ───────────────── */
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const el=e.target, delay=+(el.dataset.delay||0);
+        setTimeout(()=>el.classList.add('vis'), delay);
+        io.unobserve(el);
+      }
+    });
+  },{threshold:.1,rootMargin:'0px 0px -32px 0px'});
+
+  function stagger(sel,step=80){
+    document.querySelectorAll(sel).forEach((el,i)=>{ el.dataset.delay=i*step; });
+  }
+  stagger('#tension .t-item',     100);
+  stagger('.inc-card',            70);
+  stagger('.pq-item',             80);
+  stagger('.mod-card',            70);
+  stagger('.col-antes .tf-item',  60);
+  stagger('.col-des .tf-item',    60);
+  stagger('.bono-card',           90);
+  stagger('.faq-item',            70);
+
+  document.querySelectorAll('.fu').forEach(el=>io.observe(el));
+
+  /* ── Counter animation ──────────────────── */
+  const cio=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el=e.target, target=+el.dataset.target, t0=performance.now();
+      (function tick(now){
+        const p=Math.min((now-t0)/1200,1);
+        const ease=p<.5?2*p*p:-1+(4-2*p)*p;
+        el.textContent=Math.round(ease*target);
+        if(p<1) requestAnimationFrame(tick); else el.textContent=target;
+      })(t0);
+      cio.unobserve(el);
+    });
+  },{threshold:.5});
+  document.querySelectorAll('.counter').forEach(el=>cio.observe(el));
+
+  /* ── Ripple ─────────────────────────────── */
+  document.querySelectorAll('.rpl-btn').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const r=btn.getBoundingClientRect();
+      const sz=Math.max(r.width,r.height);
+      const s=document.createElement('span');
+      s.className='ripple';
+      s.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-r.left-sz/2}px;top:${e.clientY-r.top-sz/2}px`;
+      btn.appendChild(s);
+      s.addEventListener('animationend',()=>s.remove());
+    });
+  });
+
+  /* ── FAQ accordion ──────────────────────── */
+  document.querySelectorAll('.faq-q').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const item=btn.closest('.faq-item');
+      const ans=item.querySelector('.faq-ans');
+      const inner=item.querySelector('.faq-ans-inner');
+      const open=item.classList.contains('open');
+      // close all
+      document.querySelectorAll('.faq-item.open').forEach(it=>{
+        it.classList.remove('open');
+        it.querySelector('.faq-ans').style.height='0';
+        it.querySelector('.faq-q').setAttribute('aria-expanded','false');
+      });
+      if(!open){
+        item.classList.add('open');
+        ans.style.height=inner.offsetHeight+'px';
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

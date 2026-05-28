@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Excel Intermedio: De usuario común a usuario que destaca</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "on-background": "#1b1c1c",
+                        "inverse-surface": "#303030",
+                        "outline-variant": "#bfc9be",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "tertiary": "#4c4d4e",
+                        "primary-container": "#217346",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f6f3f2",
+                        "surface-variant": "#e4e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#a4f5bd",
+                        "primary-fixed": "#a3f4bc",
+                        "surface-tint": "#176c40",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-tertiary-container": "#e3e3e3",
+                        "secondary-container": "#d9e6da",
+                        "on-secondary-container": "#5b675e",
+                        "primary": "#005931",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d9e6da",
+                        "inverse-on-surface": "#f3f0f0",
+                        "on-primary-fixed": "#00210f",
+                        "tertiary-fixed-dim": "#c6c6c7",
+                        "inverse-primary": "#88d8a1",
+                        "surface-container-high": "#eae7e7",
+                        "surface": "#fcf9f8",
+                        "outline": "#6f7a70",
+                        "on-primary-fixed-variant": "#00522d",
+                        "on-surface": "#1b1c1c",
+                        "on-surface-variant": "#3f4941",
+                        "primary-fixed-dim": "#88d8a1",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#e2e2e2",
+                        "surface-container-highest": "#e4e2e1",
+                        "tertiary-container": "#646565",
+                        "background": "#fcf9f8",
+                        "surface-dim": "#dcd9d9",
+                        "on-secondary-fixed": "#131e17",
+                        "secondary": "#556158",
+                        "secondary-fixed-dim": "#bdcabe",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#3e4a41"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "stack-sm": "12px",
+                        "container-max-width": "1140px",
+                        "section-padding-desktop": "80px",
+                        "stack-md": "24px",
+                        "base": "8px",
+                        "section-padding-mobile": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "display-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", { "lineHeight": "1.4", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-bold": ["14px", { "lineHeight": "1", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["32px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .flat-shadow {
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-container selection:text-white">
+<!-- HERO SECTION -->
+<section class="w-full bg-white py-section-padding-mobile md:py-section-padding-desktop border-b border-surface-variant overflow-hidden">
+<div class="max-w-container-max-width mx-auto px-gutter grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6 relative z-10">
+<div class="inline-flex items-center gap-2 bg-surface-container py-1.5 px-3 rounded-full w-max border border-outline-variant">
+<span class="material-symbols-outlined text-primary-container text-sm">trending_up</span>
+<span class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider text-xs">Por Locos por las Celdas</span>
+</div>
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-on-background">
+                    Dejá de usar Excel a medias y convertite en la persona a la que <span class="text-primary-container relative inline-block whitespace-nowrap">todos le preguntan<svg class="absolute -bottom-2 left-0 w-full h-3 text-primary-container opacity-30" preserveaspectratio="none" viewbox="0 0 100 10"><path d="M0 5 Q 50 10 100 5" fill="transparent" stroke="currentColor" stroke-width="4"></path></svg></span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                    Domina Excel nivel intermedio con una guía práctica, sin perder tiempo en cientos de videos ni pagar cursos de más de $100 USD. Empezá a entender los datos hoy mismo.
+                </p>
+<div class="flex flex-col gap-4 mt-4">
+<a class="bg-primary-container text-white font-label-bold text-lg py-4 px-8 rounded-lg text-center hover-lift flex items-center justify-center gap-2 min-h-[56px] shadow-sm" href="#precio">
+                        Acceder ahora por $11 USD
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-secondary font-medium">
+<span class="flex items-center gap-1"><span class="text-primary-container">✔</span> Pago único</span>
+<span class="flex items-center gap-1"><span class="text-primary-container">✔</span> Acceso inmediato</span>
+<span class="flex items-center gap-1"><span class="text-primary-container">✔</span> Garantía 7 días</span>
+<span class="flex items-center gap-1"><span class="text-primary-container">✔</span> PC, celular o tablet</span>
+</div>
+</div>
+</div>
+<div class="relative flex justify-center lg:justify-end">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary-container/10 to-transparent rounded-full blur-3xl transform scale-150 -z-10"></div>
+<img alt="Ebook Excel Intermedio Cover" class="w-full max-w-[500px] h-auto drop-shadow-2xl relative z-10 hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt6Y3S-wDMLHmVZyUNXD7lSV2heDfjiRCpcrq787q-S_qCPYW1s2lOCpdpCx3XUz1udcVTd9WGzjgxpKeefG66gjO2SHzl-U4HTmFlfEPx5KgUoh38Vuc7zodiqkJwon2-msOrALi-PGmUJGpTfK_TqpvmeofWcA5XJ5Iovjz3enLAgScgnhhzcBOJIiA9pJSS6cmUycTKyg56luEClG6ayTQBXmT07_WYPz8PGeRQG3RVgmMWrLWqY-eqhSxG0H0f1uoRogXjGN0"/>
+</div>
+</div>
+</section>
+<!-- TENSIÓN SECTION -->
+<section class="w-full bg-surface-container py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-3xl mx-auto px-gutter">
+<div class="text-center mb-10">
+<h2 class="font-headline-md text-headline-md text-on-background mb-4">¿Te suena familiar?</h2>
+<div class="h-1 w-20 bg-primary-container mx-auto rounded-full"></div>
+</div>
+<div class="bg-white rounded-xl p-8 border border-outline-variant flat-shadow flex flex-col gap-6">
+<div class="flex items-start gap-4">
+<span class="text-2xl mt-1">😩</span>
+<p class="font-body-md text-body-md text-on-surface">Perdés horas tratando de cruzar datos de dos planillas distintas porque no sabés usar bien BUSCARV o XLOOKUP.</p>
+</div>
+<div class="flex items-start gap-4">
+<span class="text-2xl mt-1">🤯</span>
+<p class="font-body-md text-body-md text-on-surface">Tu jefe te pide un "resumen rápido" y entrás en pánico porque no dominás las tablas dinámicas.</p>
+</div>
+<div class="flex items-start gap-4">
+<span class="text-2xl mt-1">🐢</span>
+<p class="font-body-md text-body-md text-on-surface">Repetís tareas manuales todos los días copiando y pegando celdas sin saber que podrías automatizarlo.</p>
+</div>
+<div class="flex items-start gap-4">
+<span class="text-2xl mt-1">👀</span>
+<p class="font-body-md text-body-md text-on-surface">Sentís que tus compañeros resuelven en 5 minutos lo que a vos te toma 2 horas.</p>
+</div>
+<div class="mt-4 pt-6 border-t border-surface-variant text-center">
+<p class="font-body-lg text-body-lg italic text-secondary">"No es tu culpa... simplemente nadie te enseñó la ruta directa y sin relleno."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- PRESENTACIÓN SECTION -->
+<section class="w-full bg-white py-section-padding-mobile md:py-section-padding-desktop border-b border-surface-variant">
+<div class="max-w-container-max-width mx-auto px-gutter grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="order-2 lg:order-1 relative flex justify-center">
+<img alt="Excel Intermedio Preview" class="w-full max-w-[450px] h-auto drop-shadow-xl rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGx5Agelqsa5fPbT3LZ6qRLvxwl9tfdvSys_cATmh7HQnk7dflB7GnE1vusHD4QyUfMsuQCfHUmlJVk7czegwvSS2i2vUnIhuSgNygmPayl3dXK_Xq2aHVjLjrqaohway4WrS7F-z7nPHX0YeR0VXOaNuRuwzO4RKxT_j_yaAc1-fdYDBA2jG7kmYkqN52nmV4zJn7TVU6DYe3XMgRycICc-kLlx4U-f9S8bV5Zs9xxtLM5O7_Cnm54fGgtEkpOp-3jK-5qRW05Dw"/>
+</div>
+<div class="order-1 lg:order-2 flex flex-col gap-6">
+<h2 class="font-headline-md text-headline-md text-on-background">Te presento: Excel Intermedio de usuario común a usuario que destaca</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Un ebook directo al grano, diseñado para que dejes de "armar planillas" y empieces a <strong>entender y dominar los datos</strong>. Olvidate de la teoría aburrida; acá vas a encontrar casos reales, atajos prácticos y las fórmulas que realmente se usan en el día a día laboral.
+                </p>
+<div class="flex items-center gap-3 mt-4 text-primary-container font-label-bold text-label-bold">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Lectura rápida + Práctica inmediata</span>
+</div>
+</div>
+</div>
+</section>
+<!-- QUÉ INCLUYE SECTION -->
+<section class="w-full bg-surface py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-container-max-width mx-auto px-gutter">
+<h2 class="font-headline-md text-headline-md text-center text-on-background mb-12">¿Qué recibís al comprar?</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white p-6 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="bg-secondary-container p-3 rounded-lg text-primary-container shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">book</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Ebook Guía Paso a Paso</h3>
+<p class="font-body-md text-on-surface-variant">100+ páginas de contenido destilado. Explicaciones claras, sin jerga innecesaria.</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="bg-secondary-container p-3 rounded-lg text-primary-container shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">file_copy</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Archivos de Práctica</h3>
+<p class="font-body-md text-on-surface-variant">Planillas de Excel listas para que apliques lo que leés mientras avanzás.</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="bg-secondary-container p-3 rounded-lg text-primary-container shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">redeem</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">3 Bonos Exclusivos</h3>
+<p class="font-body-md text-on-surface-variant">Material complementario para potenciar tus reportes y tu perfil profesional.</p>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border border-outline-variant flex items-start gap-4">
+<div class="bg-secondary-container p-3 rounded-lg text-primary-container shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">all_inclusive</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Acceso de por vida</h3>
+<p class="font-body-md text-on-surface-variant">Descargás el material y te lo quedás para siempre. Sin suscripciones mensuales.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PARA QUIÉN ES SECTION -->
+<section class="w-full bg-[#E8F5E9] py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-4xl mx-auto px-gutter">
+<h2 class="font-headline-md text-headline-md text-center text-on-background mb-10">Este ebook es para vos si...</h2>
+<div class="bg-white rounded-xl p-8 border border-[#D0E8D2] flat-shadow">
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="text-primary-container mt-1 material-symbols-outlined">check_circle</span>
+<span class="font-body-lg text-on-surface">Usás Excel básico (sabés sumar, restar, dar formato) pero <strong>sentís que te falta un salto de nivel</strong>.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="text-primary-container mt-1 material-symbols-outlined">check_circle</span>
+<span class="font-body-lg text-on-surface">Estás buscando <strong>cambiar de trabajo o ascender</strong> y piden "Excel Intermedio/Avanzado" en los requisitos.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="text-primary-container mt-1 material-symbols-outlined">check_circle</span>
+<span class="font-body-lg text-on-surface">Sos emprendedor o trabajás con datos y necesitás <strong>tomar decisiones más rápido</strong> sin depender de otros.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="text-primary-container mt-1 material-symbols-outlined">check_circle</span>
+<span class="font-body-lg text-on-surface">Preferís <strong>leer e ir directo al punto</strong> antes que mirar horas de video donde hablan lento.</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- MÓDULOS SECTION -->
+<section class="w-full bg-white py-section-padding-mobile md:py-section-padding-desktop border-b border-surface-variant">
+<div class="max-w-container-max-width mx-auto px-gutter">
+<div class="text-center mb-12">
+<h2 class="font-headline-md text-headline-md text-on-background mb-2">Un camino claro, paso a paso</h2>
+<p class="font-body-lg text-secondary">No es teoría suelta. Es un sistema ordenado para dominar la herramienta.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Module 1 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">🧠</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">1. Mentalidad de Datos</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Cómo estructurar la información antes de tocar una fórmula para evitar errores futuros.</p>
+</div>
+<!-- Module 2 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">🧮</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">2. Fórmulas Esenciales</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Dominio total de BUSCARV, XLOOKUP, SI, Y, O, CONTAR.SI, SUMAR.SI. El corazón del análisis.</p>
+</div>
+<!-- Module 3 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">📊</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">3. Tablas Dinámicas</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Resumir miles de filas de datos en 3 clics. El "secreto" de los reportes gerenciales rápidos.</p>
+</div>
+<!-- Module 4 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">📈</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">4. Visualización</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Gráficos que realmente comunican y formatos condicionales para detectar anomalías al instante.</p>
+</div>
+<!-- Module 5 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">✅</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">5. Validación y Limpieza</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Crear listas desplegables y limpiar datos "sucios" usando Texto en Columnas y atajos clave.</p>
+</div>
+<!-- Module 6 -->
+<div class="bg-white rounded-xl p-6 border border-outline-variant flat-shadow hover:border-primary-container transition-colors relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-surface-variant group-hover:bg-primary-container transition-colors"></div>
+<div class="text-3xl mb-4">⚡</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">6. Intro a Power Query</h3>
+<p class="font-body-md text-on-surface-variant text-sm">El primer paso a la automatización. Cómo conectar datos sin copiar y pegar nunca más.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- TRANSFORMACIÓN SECTION -->
+<section class="w-full bg-surface py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-4xl mx-auto px-gutter">
+<h2 class="font-headline-md text-headline-md text-center text-on-background mb-10">¿Qué cambia cuando dominás Excel intermedio?</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl overflow-hidden border border-outline-variant bg-white">
+<!-- ANTES -->
+<div class="bg-surface-variant/30 p-8">
+<h3 class="font-headline-sm text-xl font-bold text-secondary mb-6 flex items-center gap-2">
+<span class="text-2xl">❌</span> ANTES
+                    </h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-3 font-body-md text-on-surface-variant">
+<span class="text-tertiary-fixed-dim mt-1">✖</span>
+                            2 horas copiando y pegando datos.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface-variant">
+<span class="text-tertiary-fixed-dim mt-1">✖</span>
+                            Miedo de "romper" la planilla si tocás algo.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface-variant">
+<span class="text-tertiary-fixed-dim mt-1">✖</span>
+                            Calculadora en mano para revisar subtotales.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface-variant">
+<span class="text-tertiary-fixed-dim mt-1">✖</span>
+                            Inseguridad al postularte a nuevos puestos.
+                        </li>
+</ul>
+</div>
+<!-- DESPUÉS -->
+<div class="bg-[#E8F5E9] p-8 border-t md:border-t-0 md:border-l border-outline-variant">
+<h3 class="font-headline-sm text-xl font-bold text-primary-container mb-6 flex items-center gap-2">
+<span class="text-2xl">✅</span> DESPUÉS
+                    </h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-3 font-body-md text-on-surface">
+<span class="text-primary-container mt-1 material-symbols-outlined">check</span>
+                            10 minutos actualizando un reporte automático.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface">
+<span class="text-primary-container mt-1 material-symbols-outlined">check</span>
+                            Seguridad total al manipular y cruzar datos.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface">
+<span class="text-primary-container mt-1 material-symbols-outlined">check</span>
+                            Tablas dinámicas que hacen el trabajo sucio.
+                        </li>
+<li class="flex items-start gap-3 font-body-md text-on-surface">
+<span class="text-primary-container mt-1 material-symbols-outlined">check</span>
+                            Perfil destacado en entrevistas laborales.
+                        </li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- BONOS SECTION -->
+<section class="w-full bg-[#E8F5E9] py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-container-max-width mx-auto px-gutter">
+<div class="text-center mb-12">
+<span class="inline-block bg-primary-container/10 text-primary-container font-label-bold px-3 py-1 rounded-full text-sm mb-3">OFERTA LIMITADA</span>
+<h2 class="font-headline-md text-headline-md text-on-background max-w-2xl mx-auto">Y eso no es todo — también recibís estos bonos sin costo extra</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Bonus 1 -->
+<div class="bg-white rounded-xl p-6 border border-[#D0E8D2] relative pt-10">
+<div class="absolute -top-4 right-4 bg-[#FFC107] text-black font-label-bold text-xs py-1 px-3 rounded-full shadow-sm">Incluido gratis</div>
+<div class="text-3xl mb-3">🎯</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Plantilla Dashboard de Ventas</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Un tablero de control profesional listo para usar y adaptar a tus propios datos. Solo cambiás la base y se actualiza solo.</p>
+</div>
+<!-- Bonus 2 -->
+<div class="bg-white rounded-xl p-6 border border-[#D0E8D2] relative pt-10">
+<div class="absolute -top-4 right-4 bg-[#FFC107] text-black font-label-bold text-xs py-1 px-3 rounded-full shadow-sm">Incluido gratis</div>
+<div class="text-3xl mb-3">📖</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Glosario de Fórmulas Inglés/Español</h3>
+<p class="font-body-md text-on-surface-variant text-sm">La hoja de ruta para cuando te toque usar un Excel en otro idioma. Nunca más te vas a trabar buscando la traducción de una función.</p>
+</div>
+<!-- Bonus 3 -->
+<div class="bg-white rounded-xl p-6 border border-[#D0E8D2] relative pt-10">
+<div class="absolute -top-4 right-4 bg-[#FFC107] text-black font-label-bold text-xs py-1 px-3 rounded-full shadow-sm">Incluido gratis</div>
+<div class="text-3xl mb-3">📄</div>
+<h3 class="font-headline-sm text-lg font-bold text-on-background mb-2">Guía: Cómo poner Excel en tu CV</h3>
+<p class="font-body-md text-on-surface-variant text-sm">Las palabras exactas que buscan los reclutadores para que tu perfil resalte. Dejá de poner solo "Excel Avanzado".</p>
+</div>
+</div>
+</div>
+</section>
+<!-- PRECIO Y CTA FINAL SECTION -->
+<section class="w-full bg-white py-section-padding-mobile md:py-section-padding-desktop" id="precio">
+<div class="max-w-3xl mx-auto px-gutter text-center">
+<h2 class="font-headline-md text-headline-md text-on-background mb-8">Todo esto por mucho menos de lo que pensás</h2>
+<div class="bg-surface-container rounded-2xl p-8 border border-outline-variant flat-shadow max-w-xl mx-auto mb-8">
+<div class="space-y-3 mb-6 text-left border-b border-surface-variant pb-6">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Ebook Excel Intermedio + Archivos</span>
+<span>Valor: $47</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Bono: Plantilla Dashboard</span>
+<span>Valor: $15</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Bono: Glosario Inglés/Español</span>
+<span>Valor: $9</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span>Bono: Guía CV</span>
+<span>Valor: $9</span>
+</div>
+<div class="flex justify-between items-center font-bold text-on-surface mt-4 pt-2">
+<span>Valor Total:</span>
+<span class="line-through text-error">$80 USD</span>
+</div>
+</div>
+<div class="text-center">
+<p class="font-label-bold text-secondary uppercase tracking-wider text-sm mb-2">PRECIO DE LANZAMIENTO</p>
+<div class="font-display-lg text-5xl font-black text-primary-container mb-6">$11 USD</div>
+<button class="w-full bg-primary-container text-white font-headline-sm text-xl py-4 px-8 rounded-xl text-center hover-lift shadow-lg flex flex-col items-center justify-center min-h-[64px]">
+<span>QUIERO ACCEDER AHORA</span>
+<span class="text-sm font-normal opacity-80 mt-1">Pago seguro y cifrado</span>
+</button>
+<div class="mt-4 flex justify-center gap-4 text-secondary">
+<span class="material-symbols-outlined text-3xl">lock</span>
+<span class="material-symbols-outlined text-3xl">credit_card</span>
+</div>
+</div>
+</div>
+<p class="font-body-md text-secondary">Una vez realizado el pago, recibirás un correo electrónico con acceso inmediato a todo el material.</p>
+</div>
+</section>
+<!-- GARANTÍA SECTION -->
+<section class="w-full bg-primary text-white py-12">
+<div class="max-w-4xl mx-auto px-gutter flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+<span class="material-symbols-outlined text-6xl text-primary-fixed" style="font-variation-settings: 'FILL' 1;">security</span>
+<div>
+<h2 class="font-headline-sm text-2xl font-bold mb-2">Garantía total de 7 días</h2>
+<p class="font-body-md text-primary-fixed-dim">
+                    Si leés el ebook, aplicás los ejercicios y sentís que no aprendiste nada nuevo o que no vale la inversión, te devuelvo el 100% de tu dinero. Sin preguntas, sin vueltas. El riesgo lo asumo yo.
+                </p>
+</div>
+</div>
+</section>
+<!-- FAQ SECTION -->
+<section class="w-full bg-surface py-section-padding-mobile md:py-section-padding-desktop">
+<div class="max-w-3xl mx-auto px-gutter">
+<h2 class="font-headline-md text-headline-md text-center text-on-background mb-10">Preguntas Frecuentes</h2>
+<div class="space-y-4">
+<!-- FAQ Item 1 -->
+<details class="group bg-white rounded-lg border border-outline-variant cursor-pointer open:bg-surface-container transition-colors">
+<summary class="flex justify-between items-center font-headline-sm text-lg p-6 font-bold text-on-background list-none">
+                        ¿Es un curso en video?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-6 pt-0 font-body-md text-on-surface-variant">
+                        No. Es un ebook estructurado y directo al grano, acompañado de archivos de práctica en Excel. Está diseñado para quienes prefieren leer, buscar información rápida y practicar a su propio ritmo sin mirar horas de videos.
+                    </div>
+</details>
+<!-- FAQ Item 2 -->
+<details class="group bg-white rounded-lg border border-outline-variant cursor-pointer open:bg-surface-container transition-colors">
+<summary class="flex justify-between items-center font-headline-sm text-lg p-6 font-bold text-on-background list-none">
+                        ¿Desde qué versión de Excel sirve?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-6 pt-0 font-body-md text-on-surface-variant">
+                        La mayoría de las funciones y conceptos aplican desde Excel 2013 en adelante. Sin embargo, para sacar el máximo provecho (especialmente con funciones nuevas como XLOOKUP), recomendamos Excel 365 o 2021.
+                    </div>
+</details>
+<!-- FAQ Item 3 -->
+<details class="group bg-white rounded-lg border border-outline-variant cursor-pointer open:bg-surface-container transition-colors">
+<summary class="flex justify-between items-center font-headline-sm text-lg p-6 font-bold text-on-background list-none">
+                        ¿Tengo acceso de por vida?
+                        <span class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="p-6 pt-0 font-body-md text-on-surface-variant">
+                        Sí. Una vez que comprás, descargás el PDF y los archivos y son tuyos para siempre. No hay suscripciones ni pagos ocultos.
+                    </div>
+</details>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer class="bg-surface-container-highest py-12 border-t border-outline-variant">
+<div class="max-w-container-max-width mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="text-primary font-headline-sm font-black text-xl">
+                Locos por las Celdas
+            </div>
+<div class="flex flex-wrap justify-center gap-6 font-body-md text-sm text-on-surface-variant">
+<a class="hover:underline decoration-primary underline-offset-4" href="#">Términos y Condiciones</a>
+<a class="hover:underline decoration-primary underline-offset-4" href="#">Política de Privacidad</a>
+<a class="hover:underline decoration-primary underline-offset-4" href="#">Soporte</a>
+</div>
+<div class="font-body-md text-sm text-on-surface-variant text-center md:text-right">
+                © 2024 Locos por las Celdas. Todos los derechos reservados.
+            </div>
+</div>
+</footer>
+</body></html>
